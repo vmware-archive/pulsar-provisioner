@@ -4,12 +4,6 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-# from https://cloud.google.com/sdk/docs/downloads-apt-get
-export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
-echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-sudo apt-get update && sudo apt-get install google-cloud-sdk
-
 gcloud config set disable_prompts True
 gcloud auth activate-service-account --key-file <(echo ${GCLOUD_CLIENT_SECRET} | base64 --decode)
 gcloud auth configure-docker
