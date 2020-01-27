@@ -34,18 +34,26 @@ func main() {
 	if broker == "" {
 		log.Fatal("Environment variable BROKER should contain the service URL of a Pulsar cluster")
 	}
+	tenant := os.Getenv("TENANT")
+	if broker == "" {
+		log.Fatal("Environment variable TENANT should contain a tenant of the Pulsar cluster")
+	}
+	namespace := os.Getenv("NAMESPACE")
+	if broker == "" {
+		log.Fatal("Environment variable NAMESPACE should contain a namespace within a tenant of the Pulsar cluster")
+	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPut {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			return
 		}
-		handleProvisionRequest(broker, gateway, w, r)
+		handleProvisionRequest(broker, gateway, tenant, namespace, w, r)
 	})
 	_ = http.ListenAndServe(":8080", nil)
 }
 
-func handleProvisionRequest(broker, gateway string, writer http.ResponseWriter, request *http.Request) {
+func handleProvisionRequest(broker, gateway, tenant, namespace string, writer http.ResponseWriter, request *http.Request) {
 
 	parts := strings.Split(request.URL.Path[1:], "/")
 	if len(parts) != 2 {
@@ -53,8 +61,8 @@ func handleProvisionRequest(broker, gateway string, writer http.ResponseWriter, 
 		_, _ = fmt.Fprintf(writer, "URLs should be of the form /<namespace>/<stream-name>\n")
 		return
 	}
-	// TODO: support configurable tenant other than "public"
-	topicName := fmt.Sprintf("persistent://public/%s/%s", parts[0], parts[1])
+	// TODO define a better scheme to define topic names
+	topicName := fmt.Sprintf("persistent://%s/%s/%s-%s", tenant, namespace, parts[0], parts[1])
 
 	writer.WriteHeader(http.StatusOK)
 
