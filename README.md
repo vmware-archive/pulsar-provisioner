@@ -1,13 +1,13 @@
 # pulsar-provisioner
 
-The Pulsar Provisioner component is responsible for creating
+The Pulsar Provisioner component is responsible for assigning
 topics in a [Pulsar](https://pulsar.apache.org/) cluster when asked to do so by the 
 [riff system](https://github.com/projectriff/system).
 
 For a given riff `stream` "foo" existing in namespace "my-ns",
 a PUT request will be made to this component at `/my-ns/foo`.
-It will react by creating a persistent topic named `$TENANT/$NAMESPACE/foo-my-ns`
-in Pulsar (see below for configuration of `$TENANT` and `$NAMESPACE`).
+It will react by assigning a persistent topic named `persistent://$TENANT/$NAMESPACE/my-ns_foo`
+in Pulsar (see below for configuration of `$TENANT` and `$NAMESPACE`, Pulsar namespaces are distinct from Kubernetes namespaces).
 Note that because topics are created on demand in Pulsar, and because
 this provisioner does not yet support advanced topic configuration options,
 it does not _actually_ create the topic. It merely returns its coordinates.
@@ -18,7 +18,7 @@ coordinates in the following json form:
 ```json
 {
   "gateway": "<host>:<port>",
-  "topic": "<created-topic-name>"
+  "topic": "<assigned-topic-name>"
 }
 ```
 

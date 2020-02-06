@@ -62,7 +62,7 @@ func handleProvisionRequest(broker, gateway, tenant, namespace string, writer ht
 		return
 	}
 	// TODO define a better scheme to define topic names
-	topicName := fmt.Sprintf("persistent://%s/%s/%s-%s", tenant, namespace, parts[0], parts[1])
+	topicName := fmt.Sprintf("persistent://%s/%s/%s_%s", tenant, namespace, parts[0], parts[1])
 
 	writer.WriteHeader(http.StatusOK)
 
