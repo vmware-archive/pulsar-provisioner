@@ -16,7 +16,7 @@ readonly slug=${version}-${git_timestamp}-${GITHUB_SHA:0:16}
 
 publishImage() {
   local tag=$1
-  local source=ko.local/provisioner-46159645f685fedb8f6279549d9d9574:latest
+  local source=ko.local/provisioner-dff241ed7f32c3dd847956982db37a26:latest
   local destination=gcr.io/projectriff/pulsar-provisioner/provisioner:${tag}
 
   docker tag ${source} ${destination}
